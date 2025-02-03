@@ -19,7 +19,7 @@ app = Flask(__name__)
 CORS(app)
 
 if platform.system() == "Linux":
-    zbar_path = os.path.join(os.getcwd(), 'libs', 'libzbar.so')
+    zbar_path = os.path.join(os.getcwd(), 'libs', 'libzbar.so.0.3.0')
     ctypes.cdll.LoadLibrary(zbar_path)
 
 elif platform.system() == "Windows":
