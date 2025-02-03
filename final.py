@@ -1,5 +1,5 @@
 from pdf2image import convert_from_path
-from PIL import Image 
+import cv2
 from flask import Flask, jsonify, request, render_template, redirect, url_for
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
@@ -59,7 +59,7 @@ def upload_files():
                     images[i].save('qr.png', 'PNG')  # temporary in local folder
 
                 # Decode the barcode from 'qr.png'
-                image = Image.open("qr.png")
+                image = cv2.imread("qr.png")
                 decoded_objects = decode(image)
                 for obj in decoded_objects:
                     qr_data = obj.data.decode("utf-8")
