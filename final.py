@@ -3,7 +3,7 @@ import cv2
 from flask import Flask, jsonify, request, render_template, redirect, url_for
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
-import pandas as pd
+import csv
 import os
 from pyzbar.pyzbar import decode
 from reportlab.graphics.barcode import code128
@@ -69,11 +69,18 @@ def upload_files():
                     c = canvas.Canvas(os.path.join(SAVED_DATA_FOLDER, "barcode.pdf"))
                     c.setFont("Helvetica", 14)
 
-                    df = pd.read_csv(os.path.join(UPLOAD_FOLDER_1, excel_file), keep_default_na=False, dtype=str)
-                    data = df.values.tolist()
+                    with open(os.path.join(UPLOAD_FOLDER_1,l), 'r', encoding='utf-8') as f:
+                        reader = csv.reader(f)
+                        data = list(reader)  # list of lists
 
-                    json_data = df.to_dict(orient="index")
-                    s = json_data[2]["Unnamed: 1"] + " " + json_data[1]["Unnamed: 1"] + " " + json_data[0]["Unnamed: 1"]
+                    json = {}
+                    for i, row in enumerate(data):
+                        row_dict = {}
+                        for j, col_value in enumerate(row):
+                            row_dict[f"Unnamed: {j}"] = col_value
+                        json[i] = row_dict
+                    print(json)
+                    s=json[3]["Unnamed: 1"]+" "+json[2]["Unnamed: 1"]+" "+json[1]["Unnamed: 1"]
 
                     # Create a table and style it
                     table = Table(data)
@@ -93,13 +100,11 @@ def upload_files():
                     barcode_obj.drawOn(c, x=150, y=550)
                     c.drawString(200, 530, qr_data)
                     c.drawString(200, 510, s)
-                    c.drawString(50, 820, json_data[7]["Unnamed: 1"])
 
                     # Bottom portion
                     barcode_obj.drawOn(c, x=150, y=110)
                     c.drawString(200, 90, qr_data)
                     c.drawString(200, 70, s)
-                    c.drawString(50, 370, json_data[7]["Unnamed: 1"])
 
                     c.save()
                     print("Barcode PDF saved")

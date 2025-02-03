@@ -1,7 +1,6 @@
 Flask
 flask-cors
 werkzeug
-pandas
 pdf2image
 opencv-python-headless
 pyzbar
