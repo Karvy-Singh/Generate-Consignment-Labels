@@ -18,13 +18,8 @@ from reportlab.pdfgen import canvas
 app = Flask(__name__)
 CORS(app)
 
-if platform.system() == "Linux":
-    zbar_path = os.path.join(os.getcwd(), 'libs', 'libzbar.so.0.3.0')
-    ctypes.cdll.LoadLibrary(zbar_path)
-
-elif platform.system() == "Windows":
-    zbar_path = os.path.join(os.getcwd(), 'libs', 'zbar.dll')
-    ctypes.cdll.LoadLibrary(zbar_path)
+libs_path = os.path.join(os.path.dirname(__file__), 'libs')
+os.environ["LD_LIBRARY_PATH"] = os.environ.get("LD_LIBRARY_PATH", "") + f":{libs_path}"
 
 SAVED_DATA_FOLDER = os.path.join(os.getcwd(), 'saved_data')
 UPLOAD_FOLDER_1 = os.path.join(os.getcwd(), 'excel')
