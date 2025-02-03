@@ -10,9 +10,6 @@
       "src": "/(.*)",
       "dest": "final.py"
     }
-  ],
-  "functions": {
-    "memory": 1024
-  }
+  ]
 }
 
