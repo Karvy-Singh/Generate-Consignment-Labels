@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload</title>
+    <style>
+        #excelDropZone {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+            cursor: pointer;
+        }
+        #barcodeDropZone {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+            cursor: pointer;
+        }
+        #dropZone.dragover {
+            border-color: green;
+        }
+    </style>
+</head>
+<body>
+
+<h2> Upload Excel File </h2>
+<div id="excelDropZone" class="dropZone">
+    Drag and drop files here or click to upload
+</div>
+<input type="file" id="excelFileInput" data-type="excel" name="file" style="display: none;">
+
+<h2> Upload Barcode </h2>
+<div id="barcodeDropZone" class="dropZone">
+    Drag and drop files here or click to upload
+</div>
+<input type="file" id="barcodeFileInput" data-type="barcode" name="file" style="display: none;">
+
+<script>
+function initializeDropBox(dropZoneId, fileInputId) {
+    const dropZone = document.getElementById(dropZoneId);
+    const fileInput = document.getElementById(fileInputId);
+
+    // Click to trigger file selection
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    // Handle manual file selection
+    fileInput.addEventListener('change', (event) => {
+        handleFiles(event.target.files, fileInput.getAttribute("data-type"));
+    });
+
+    // Handle drag-and-drop files
+    dropZone.addEventListener('dragover', (event) => {
+        event.preventDefault();
+        dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (event) => {
+        event.preventDefault();
+        dropZone.classList.remove('dragover');
+        handleFiles(event.dataTransfer.files, fileInput.getAttribute("data-type"));
+    });
+
+    // Function to handle files
+    function handleFiles(files, dataType) {
+        const formData = new FormData();
+        formData.append('file', files[0]);
+        formData.append('dataType', dataType);
+
+        fetch('/upload', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Upload successful:', data);
+        })
+        .catch(error => {
+            console.error('Upload error:', error);
+        });
+    }
+}
+
+// Initialize the dropboxes for both sections
+initializeDropBox('excelDropZone', 'excelFileInput');
+initializeDropBox('barcodeDropZone', 'barcodeFileInput');
+</script>
+
+</body>
+</html>
