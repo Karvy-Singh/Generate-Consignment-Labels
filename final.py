@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 from flask_cors import CORS
 import csv
 import os
+import ctypes
 from pyzbar.pyzbar import decode
 from reportlab.graphics.barcode import code128
 from reportlab.graphics.shapes import Drawing
@@ -16,6 +17,14 @@ from reportlab.pdfgen import canvas
 # Rename your Flask instance to 'app'
 app = Flask(__name__)
 CORS(app)
+
+if platform.system() == "Linux":
+    zbar_path = os.path.join(os.getcwd(), 'libs', 'libzbar.so')
+    ctypes.cdll.LoadLibrary(zbar_path)
+
+elif platform.system() == "Windows":
+    zbar_path = os.path.join(os.getcwd(), 'libs', 'zbar.dll')
+    ctypes.cdll.LoadLibrary(zbar_path)
 
 SAVED_DATA_FOLDER = os.path.join(os.getcwd(), 'saved_data')
 UPLOAD_FOLDER_1 = os.path.join(os.getcwd(), 'excel')
