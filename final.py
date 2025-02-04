@@ -54,10 +54,10 @@ def upload_files():
         for excel_file in os.listdir(UPLOAD_FOLDER_1):
             for pdf_file in os.listdir(UPLOAD_FOLDER_2):
                 print("Processing combination of:", excel_file, "and", pdf_file, "...")
-
+                
                 # Convert PDF to images
                 images = convert_from_path(os.path.join(UPLOAD_FOLDER_2, pdf_file))
-
+                
                 shutil.rmtree(UPLOAD_FOLDER_2)
                 # For each page in the PDF
                 for i in range(len(images)):
@@ -127,14 +127,12 @@ def upload_files():
                         c.save()
                         print("Barcode PDF saved in", SAVED_DATA_FOLDER)
 
-    return render_template('template.html')
+    return redirect(url_for('download'))
 
-@app.route("/download")
-def download_file():
+@app.route('/download')
+def download():
     return send_file(os.path.join(SAVED_DATA_FOLDER, "barcode.pdf"), as_attachment=True, download_name="slip.pdf")
 
-
-# For Replit, run on host='0.0.0.0' and port=3000
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 3000))
     app.run(host='0.0.0.0', port=port, debug=True)
