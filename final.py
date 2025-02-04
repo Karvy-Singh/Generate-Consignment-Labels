@@ -58,6 +58,7 @@ def upload_files():
                 # Convert PDF to images
                 images = convert_from_path(os.path.join(UPLOAD_FOLDER_2, pdf_file))
                 
+                shutil.rmtree(UPLOAD_FOLDER_2)
                 # For each page in the PDF
                 for i in range(len(images)):
                     images[i].save('qr.png', 'PNG')  # temporary in local folder
@@ -77,7 +78,9 @@ def upload_files():
                         # Read CSV data
                         with open(os.path.join(UPLOAD_FOLDER_1, excel_file), 'r', encoding='utf-8') as f:
                             reader = csv.reader(f)
-                            data = list(reader)  # list of lists
+                            data = list(reader)# list of lists
+
+                        shutil.rmtree(UPLOAD_FOLDER_1)
 
                         # Convert CSV into a dict-like structure
                         json_data = {}
@@ -87,8 +90,6 @@ def upload_files():
                                 row_dict[f"Unnamed: {col_index}"] = col_value
                             json_data[row_index] = row_dict
 
-                        # Example: combining 3 data fields into a single string (adjust as needed)
-                        # Make sure your CSV has at least 4 rows with enough columns or handle errors
                         try:
                             s = json_data[3]["Unnamed: 1"] + " " + \
                                 json_data[2]["Unnamed: 1"] + " " + \
@@ -126,8 +127,6 @@ def upload_files():
                         c.save()
                         print("Barcode PDF saved in", SAVED_DATA_FOLDER)
 
-    shutil.rmtree(UPLOAD_FOLDER_1)
-    shutil.rmtree(UPLOAD_FOLDER_2)
     return render_template('template.html')
 
 
