@@ -1,7 +1,7 @@
 from pdf2image import convert_from_path
 import shutil
 import cv2
-from flask import Flask, jsonify, request, render_template, redirect, url_for
+from flask import Flask, jsonify, request, render_template, redirect, url_for, send_file
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
 import csv
@@ -54,10 +54,10 @@ def upload_files():
         for excel_file in os.listdir(UPLOAD_FOLDER_1):
             for pdf_file in os.listdir(UPLOAD_FOLDER_2):
                 print("Processing combination of:", excel_file, "and", pdf_file, "...")
-                
+
                 # Convert PDF to images
                 images = convert_from_path(os.path.join(UPLOAD_FOLDER_2, pdf_file))
-                
+
                 shutil.rmtree(UPLOAD_FOLDER_2)
                 # For each page in the PDF
                 for i in range(len(images)):
@@ -128,6 +128,10 @@ def upload_files():
                         print("Barcode PDF saved in", SAVED_DATA_FOLDER)
 
     return render_template('template.html')
+
+@app.route("/download")
+def download_file():
+    return send_file(os.path.join(SAVED_DATA_FOLDER, "barcode.pdf"), as_attachment=True, download_name="slip.pdf")
 
 
 # For Replit, run on host='0.0.0.0' and port=3000
