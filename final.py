@@ -107,6 +107,8 @@ def upload_files():
 
                         table.wrapOn(c, 500, 400)
                         table.drawOn(c, x=50, y=600)
+                        table.wrapOn(c, 500, 400)
+                        table.drawOn(c, x=50, y=150)
 
                         # Add the barcode
                         barcode_obj = code128.Code128(qr_data, barHeight=25, barWidth=1)
@@ -124,9 +126,10 @@ def upload_files():
                         c.save()
                         print("Barcode PDF saved in", SAVED_DATA_FOLDER)
 
-    return render_template('template.html')
     shutil.rmtree(UPLOAD_FOLDER_1)
     shutil.rmtree(UPLOAD_FOLDER_2)
+    return render_template('template.html')
+
 
 # For Replit, run on host='0.0.0.0' and port=3000
 if __name__ == '__main__':
