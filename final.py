@@ -54,11 +54,12 @@ def upload_files():
         for excel_file in os.listdir(UPLOAD_FOLDER_1):
             for pdf_file in os.listdir(UPLOAD_FOLDER_2):
                 print("Processing combination of:", excel_file, "and", pdf_file, "...")
-                
+
                 # Convert PDF to images
                 images = convert_from_path(os.path.join(UPLOAD_FOLDER_2, pdf_file))
-                
-                shutil.rmtree(UPLOAD_FOLDER_2)
+
+                os.remove(os.path.join(UPLOAD_FOLDER_2, pdf_file))
+
                 # For each page in the PDF
                 for i in range(len(images)):
                     images[i].save('qr.png', 'PNG')  # temporary in local folder
@@ -80,7 +81,7 @@ def upload_files():
                             reader = csv.reader(f)
                             data = list(reader)# list of lists
 
-                        shutil.rmtree(UPLOAD_FOLDER_1)
+                        os.remove(os.path.join(UPLOAD_FOLDER_1, excel_file))
 
                         # Convert CSV into a dict-like structure
                         json_data = {}
