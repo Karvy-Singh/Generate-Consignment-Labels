@@ -127,7 +127,7 @@ def upload_files():
                         c.save()
                         print("Barcode PDF saved in", SAVED_DATA_FOLDER)
 
-    return redirect(url_for('download'))
+        return redirect(url_for('download'))
 
 @app.route('/download')
 def download():
